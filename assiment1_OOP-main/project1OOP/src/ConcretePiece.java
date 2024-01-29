@@ -1,6 +1,5 @@
 public abstract class  ConcretePiece implements Piece{
 private Player owner;
-private Player edit;
 private String typePiece; // king or pawn
     private Position piecePosition;
     private String numPiece;
