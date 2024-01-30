@@ -1,10 +1,14 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class GameLogic implements PlayableLogic{
     private Player edit;
-    private Player firstPlayer;
-    private Player secendPlayer;
+    private ConcretePlayer firstPlayer;
+    private ConcretePlayer secendPlayer;
     private Player currentPlayer;
     private King king;
     private ConcretePiece[][] board;
+    private List<Position> moveHistory;
 
     public GameLogic() {
         this.board = new ConcretePiece[11][11];
@@ -185,6 +189,15 @@ public class GameLogic implements PlayableLogic{
             piece = board[positionX][positionY];
         }
             if (positionY == b.getY() && positionX == b.getX()) {//if we make it to b's position with no pieces in the way
+                if(isGameFinished()){
+                    if(firstPlayerWin()){
+                        this.firstPlayer.setWins();
+                    }
+                    else{
+                         this.secendPlayer.setWins();
+                    }
+                    reset();
+                }
                 board[positionX][positionY] = board[a.getX()][a.getY()];
                 board[a.getX()][a.getY()] = null;
                 eatingPiece(positionX,positionY);
@@ -198,13 +211,6 @@ public class GameLogic implements PlayableLogic{
 
     public void eatingPiece(int positionX, int positionY){//get the piece that we want to check if he killed someone
         ConcretePiece piece = board[positionX][positionY];
-        if(piece.getType().equals("♔")){//continue!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            if((positionX==0&&positionY==10)||(positionY==0&&positionX==10)||(positionX==0&&positionY==0)||(positionX==10&&positionY==10)){
-                isGameFinished();
-                reset();
-                return;
-            }
-        }
         if (!piece.getType().equals("♔")) { // continue!!!!!!!!!!!!!!!!
             Position pos1 = new Position(positionX+1,positionY);
             Position pos2 = new Position(positionX-1,positionY);
@@ -214,27 +220,19 @@ public class GameLogic implements PlayableLogic{
                 if (board[positionX + 1][positionY] != null && pos1.isValidPosition()) {
                     if (!piece.getOwner().equals(board[positionX + 1][positionY].getOwner())) {
                         if (checkNeighbour(positionX + 1, positionY)) {
-                            // board[positionX+1][positionY]
-                            if (board[positionX + 1][positionY].getType().equals("♔")){//if the king gets eaten
-                                isGameFinished();
-                                reset();
-                                // this.secendPlayer.setWins();
-                                return;
-                            }
+                            piece.setNumKills();
+                            isGameFinished();
                             board[positionX + 1][positionY] = null;
                         }
                     }
                 }
             }
-            if(positionX-1>0) {
+            if(positionX-1>-1) {
                 if (board[positionX - 1][positionY] != null && pos2.isValidPosition()) {
                     if (!piece.getOwner().equals(board[positionX - 1][positionY].getOwner())) {
                         if (checkNeighbour(positionX - 1, positionY)) {
-                            if (board[positionX - 1][positionY].getType().equals("♔")){//if the king gets eaten
-                                isGameFinished();
-                                reset();
-                                return;
-                            }
+                            piece.setNumKills();
+                            isGameFinished();
                             board[positionX - 1][positionY] = null;
                         }
                     }
@@ -244,25 +242,19 @@ public class GameLogic implements PlayableLogic{
                 if (board[positionX][positionY + 1] != null && pos3.isValidPosition()) {
                     if (!piece.getOwner().equals(board[positionX][positionY + 1].getOwner())) {
                         if (checkNeighbour(positionX, positionY + 1)) {
-                            if (board[positionX][positionY + 1].getType().equals("♔")){//if the king gets eaten
-                                isGameFinished();
-                                reset();
-                                return;
-                            }
+                            piece.setNumKills();
+                            isGameFinished();
                             board[positionX][positionY + 1] = null;
                         }
                     }
                 }
             }
-            if(positionY-1>0) {
+            if(positionY-1>-1) {
                 if (board[positionX][positionY - 1] != null && pos4.isValidPosition()) {
                     if (!piece.getOwner().equals(board[positionX][positionY - 1].getOwner())) {
                         if (checkNeighbour(positionX, positionY - 1)) {
-                            if (board[positionX][positionY - 1].getType().equals("♔")){//if the king gets eaten
-                                isGameFinished();
-                                reset();
-                                return;
-                            }
+                            piece.setNumKills();
+                            isGameFinished();
                             board[positionX][positionY - 1] = null;
                         }
                     }
@@ -323,8 +315,8 @@ public class GameLogic implements PlayableLogic{
                 return true;
             }
         }
-        if ((neighbour1.getX() > 10 || neighbour1.getX() < 0 ||
-                neighbour1.getY() > 10 || neighbour1.getY() < 0)) {
+        if ((neighbour1.getX() > 9 || neighbour1.getX() < 0 ||
+                neighbour1.getY() > 9 || neighbour1.getY() < 0)) {
             countWall++;
             OpponnentLeftRight++;
 
@@ -336,7 +328,7 @@ public class GameLogic implements PlayableLogic{
                 OpponnentLeftRight++;
             }
         }
-        if((neighbour2.getX()>10||neighbour2.getX()<0||neighbour2.getY()>10||
+        if((neighbour2.getX()>9||neighbour2.getX()<0||neighbour2.getY()>9||
                 neighbour2.getY()<0)){
             countWall++;
                 OpponnentLeftRight++;
@@ -349,7 +341,7 @@ public class GameLogic implements PlayableLogic{
                 OpponnentLeftRight++;
               }
             }
-        if((neighbour3.getX()>10||neighbour3.getX()<0||neighbour3.getY()>10||
+        if((neighbour3.getX()>9||neighbour3.getX()<0||neighbour3.getY()>9||
                 neighbour3.getY()<0)){
             countWall++;
                 OpponnentUpDown++;
@@ -361,7 +353,7 @@ public class GameLogic implements PlayableLogic{
                 OpponnentUpDown++;
              }
          }
-         if ((neighbour4.getX()>10||neighbour4.getX()<0||neighbour4.getY()>10||
+         if ((neighbour4.getX()>9||neighbour4.getX()<0||neighbour4.getY()>9||
                  neighbour4.getY()<0)){
                  countWall++;
                   OpponnentUpDown++;
@@ -372,7 +364,12 @@ public class GameLogic implements PlayableLogic{
                  OpponnentUpDown++;
              }
          }
-        if(count>2|OpponnentUpDown==2||OpponnentLeftRight==2||(countWall+count>2)){
+        System.out.println("count is:"+count);
+        System.out.println("OpponnentUpDown is:"+OpponnentUpDown);
+        System.out.println("OpponnentLeftRight is:"+OpponnentLeftRight);
+        System.out.println("countWall is:"+countWall);
+        if(count>2|OpponnentUpDown==2||OpponnentLeftRight==2||(countWall+count>2)||
+                (OpponnentLeftRight+countWall==2)||(OpponnentUpDown+countWall==2)){
             return true;
         }
         return false;
@@ -389,6 +386,8 @@ public class GameLogic implements PlayableLogic{
             this.currentPlayer = getFirstPlayer();
         }
     }
+
+    //***************************end move*****************************************************
     @Override // finished
     public Piece getPieceAtPosition(Position position) {
            return board[position.getX()][position.getY()];
@@ -403,22 +402,51 @@ public class GameLogic implements PlayableLogic{
     public Player getSecondPlayer() {
         return this.secendPlayer;
     }
+//********************************************************************************************
 
     @Override
     public boolean isGameFinished() {//continue!!!!!
-        int kingPosX = this.king.getKingPosition().getX();
-        int kingPosY = this.king.getKingPosition().getY();
-        if(checkNeighbour(kingPosX,kingPosY)){
+        if(firstPlayerWin()){
+            //need to print first player and then second player
             reset();
             return true;
         }
-        if((kingPosX==0&&kingPosY==0)||(kingPosX==0&&kingPosY==10)||(kingPosX==10&&kingPosY==0)
-                ||(kingPosX==10&&kingPosY==10)){
+        if(secondPlayerWin()){
+            //need to print second player and then first player
             reset();
             return true;
         }
         return false;
     }
+
+    public boolean firstPlayerWin(){//if the first player wins
+        int kingPosX = this.king.getKingPosition().getX();
+        int kingPosY = this.king.getKingPosition().getY();
+        if(kingPosX==0&&kingPosY==0){
+            return true;
+        }
+        if(kingPosX==0&&kingPosY==10){
+            return true;
+        }
+        if (kingPosX==10&&kingPosY==0){
+            return true;
+        }
+        if (kingPosX==10&&kingPosY==10){
+            return true;
+        }
+        return false;
+    }
+
+    public boolean secondPlayerWin(){
+        int kingPosX = this.king.getKingPosition().getX();
+        int kingPosY = this.king.getKingPosition().getY();
+        if(checkNeighbour(kingPosX,kingPosY)){
+            return true;
+        }
+        return false;
+    }
+
+    //************************************is game finished*************************************************
 
     @Override
     public boolean isSecondPlayerTurn() {//finished
