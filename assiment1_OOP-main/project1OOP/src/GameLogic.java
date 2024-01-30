@@ -272,6 +272,41 @@ public class GameLogic implements PlayableLogic{
         changeTurn();
         return ;
     }
+
+    public boolean checKingNeighbour(int posX , int posY){
+        if(posX==0){
+            if(!board[posX+1][posY].getOwner().isPlayerOne()&&!board[posX][posY+1].getOwner().isPlayerOne()&&
+                    !board[posX][posY-1].getOwner().isPlayerOne()){
+                return true;
+            }
+        }
+        else if(posX == 10){
+            if(!board[posX-1][posY].getOwner().isPlayerOne()&&!board[posX][posY+1].getOwner().isPlayerOne()&&
+                    !board[posX][posY-1].getOwner().isPlayerOne()){
+                return true;
+            }
+        }
+        else if(posY==0){
+            if(!board[posX+1][posY].getOwner().isPlayerOne()&&!board[posX-1][posY].getOwner().isPlayerOne()&&
+                    !board[posX][posY+1].getOwner().isPlayerOne()){
+                return true;
+            }
+        }
+        else  if(posY==10){
+            if(!board[posX+1][posY].getOwner().isPlayerOne()&&!board[posX-1][posY].getOwner().isPlayerOne()&&
+                    !board[posX][posY-1].getOwner().isPlayerOne()){
+                return true;
+            }
+        }
+        else {
+            if(!board[posX+1][posY].getOwner().isPlayerOne()&&!board[posX-1][posY].getOwner().isPlayerOne()&&
+                    !board[posX][posY-1].getOwner().isPlayerOne()&&!board[posX][posY+1].getOwner().isPlayerOne()){
+                return true;
+            }
+        }
+        return false;
+    }
+
     //check the extreme case when the pawn is near the wall and pawn cant go to the corners
     public boolean checkNeighbour(int posX , int posY){// return true if the piece in the position is eaten else return false
         int count = 0;
@@ -284,41 +319,15 @@ public class GameLogic implements PlayableLogic{
         Position neighbour3 = new Position(posX,posY+1);
         Position neighbour4 = new Position(posX,posY-1);
         if(board[posX][posY].getType().equals("♔")){// if the king might be eaten or winning
-            if(posX==0){
-                if(!board[posX+1][posY].getOwner().isPlayerOne()&&!board[posX][posY+1].getOwner().isPlayerOne()&&
-                        !board[posX][posY-1].getOwner().isPlayerOne()){
-                    return true;
-                }
-            }
-           else if(posX == 10){
-                if(!board[posX-1][posY].getOwner().isPlayerOne()&&!board[posX][posY+1].getOwner().isPlayerOne()&&
-                        !board[posX][posY-1].getOwner().isPlayerOne()){
-                    return true;
-                }
-            }
-            else if(posY==0){
-                if(!board[posX+1][posY].getOwner().isPlayerOne()&&!board[posX-1][posY].getOwner().isPlayerOne()&&
-                        !board[posX][posY+1].getOwner().isPlayerOne()){
-                    return true;
-                }
-            }
-           else  if(posY==10){
-                if(!board[posX+1][posY].getOwner().isPlayerOne()&&!board[posX-1][posY].getOwner().isPlayerOne()&&
-                        !board[posX][posY-1].getOwner().isPlayerOne()){
-                    return true;
-                }
-            }
-           else {
-                if(!board[posX+1][posY].getOwner().isPlayerOne()&&!board[posX-1][posY].getOwner().isPlayerOne()&&
-                        !board[posX][posY-1].getOwner().isPlayerOne()&&!board[posX][posY+1].getOwner().isPlayerOne()){
-                    return true;
-                }
+            if(checKingNeighbour(posX,posY)){
+                return true;
             }
         }
-        if (!myOwner.isPlayerOne() && (neighbour1.getX() == 11 || neighbour1.getX() == -1 ||
-                neighbour1.getY() == 11 || neighbour1.getY() == -1)) {
+        if ((neighbour1.getX() > 10 || neighbour1.getX() < 0 ||
+                neighbour1.getY() > 10 || neighbour1.getY() < 0)) {
             countWall++;
             OpponnentLeftRight++;
+
         }
          else if(board[posX+1][posY]!=null) {
             if (neighbour1.isValidPosition()&&!board[posX+1][posY].getType().equals("♔") &&
@@ -327,9 +336,12 @@ public class GameLogic implements PlayableLogic{
                 OpponnentLeftRight++;
             }
         }
-        if(!myOwner.isPlayerOne() && (neighbour2.getX()==11||neighbour2.getX()==-1||neighbour2.getY()==11||neighbour2.getY()==-1)){
+        if((neighbour2.getX()>10||neighbour2.getX()<0||neighbour2.getY()>10||
+                neighbour2.getY()<0)){
             countWall++;
-            OpponnentLeftRight++;
+                OpponnentLeftRight++;
+
+
         }
         else if (board[posX-1][posY]!=null) {
             if (neighbour2.isValidPosition()&&!board[posX-1][posY].getType().equals("♔") &&!myOwner.equals(board[posX-1][posY].getOwner())) {
@@ -337,9 +349,11 @@ public class GameLogic implements PlayableLogic{
                 OpponnentLeftRight++;
               }
             }
-        if(!myOwner.isPlayerOne() && (neighbour3.getX()==11||neighbour3.getX()==-1||neighbour3.getY()==11||neighbour3.getY()==-1)){
+        if((neighbour3.getX()>10||neighbour3.getX()<0||neighbour3.getY()>10||
+                neighbour3.getY()<0)){
             countWall++;
-            OpponnentUpDown++;
+                OpponnentUpDown++;
+
         }
         else if (board[posX][posY+1]!=null) {
             if (neighbour3.isValidPosition()&&!board[posX][posY+1].getType().equals("♔") &&!myOwner.equals(board[posX][posY+1].getOwner())) {
@@ -347,9 +361,10 @@ public class GameLogic implements PlayableLogic{
                 OpponnentUpDown++;
              }
          }
-         if (!myOwner.isPlayerOne() && (neighbour4.getX()==11||neighbour4.getX()==-1||neighbour4.getY()==11||neighbour4.getY()==-1)){
-             countWall++;
-             OpponnentUpDown++;
+         if ((neighbour4.getX()>10||neighbour4.getX()<0||neighbour4.getY()>10||
+                 neighbour4.getY()<0)){
+                 countWall++;
+                  OpponnentUpDown++;
          }
          else if(board[posX][posY-1]!=null) {
              if (neighbour4.isValidPosition()&&!board[posX][posY-1].getType().equals("♔") &&!myOwner.equals(board[posX][posY-1].getOwner())) {
@@ -357,8 +372,7 @@ public class GameLogic implements PlayableLogic{
                  OpponnentUpDown++;
              }
          }
-        if(count>2|OpponnentUpDown==2||OpponnentLeftRight==2||(countWall>0&&count>0)||
-                (OpponnentUpDown>=1&&countWall>=1)||(OpponnentLeftRight>=1&&countWall>=1)){
+        if(count>2|OpponnentUpDown==2||OpponnentLeftRight==2||(countWall+count>2)){
             return true;
         }
         return false;
@@ -392,7 +406,17 @@ public class GameLogic implements PlayableLogic{
 
     @Override
     public boolean isGameFinished() {//continue!!!!!
-
+        int kingPosX = this.king.getKingPosition().getX();
+        int kingPosY = this.king.getKingPosition().getY();
+        if(checkNeighbour(kingPosX,kingPosY)){
+            reset();
+            return true;
+        }
+        if((kingPosX==0&&kingPosY==0)||(kingPosX==0&&kingPosY==10)||(kingPosX==10&&kingPosY==0)
+                ||(kingPosX==10&&kingPosY==10)){
+            reset();
+            return true;
+        }
         return false;
     }
 

@@ -5,7 +5,7 @@ public King (){
 
 }
     public King(Player owner,Position kingPosition, String numPiece){
-       super(owner,"♔",kingPosition,numPiece);
+       super(owner,"♔",kingPosition,numPiece,0);
      this.kingPosition = kingPosition;
     }
 
@@ -13,4 +13,7 @@ public King (){
         return this.kingPosition;
     }
 
+    public int setNumKiles(){
+        return 0;
+    }
 }

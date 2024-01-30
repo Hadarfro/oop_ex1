@@ -1,23 +1,20 @@
 public class Pawn extends ConcretePiece{
 private Position pawnPosition;
-private int numKils;
+//private int numKils;
 
 
    public Pawn(Player owner, Position pawnPosition,String numPiece){
-       super(owner,"♙",pawnPosition,numPiece);
+       super(owner,"♙",pawnPosition,numPiece,0);
      this.pawnPosition = pawnPosition;
-       this.numKils = 0;
+
     }
     public Position getPawnPosition(){
        return this.pawnPosition;
     }
 
-    public int getNumKils(){
-       return this.numKils;
-    }
-
     public int setNumKils(){
-        return this.numKils++;
+       int ans = this.getNumKiles() + 1;
+        return ans;
     }
 
 }
