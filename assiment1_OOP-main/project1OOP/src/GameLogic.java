@@ -40,10 +40,10 @@ public class GameLogic implements PlayableLogic{
         setPawn(4,7,6, true, getFirstPlayer());
 
         //leftOvers :)
-        setOnePawn(5,3, getFirstPlayer());
-        setOnePawn(3,5,getFirstPlayer());
-        setOnePawn(7,5,getFirstPlayer());
-        setOnePawn(5,7, getFirstPlayer());
+        setOnePawn(5,3, getFirstPlayer(),"1D");
+        setOnePawn(3,5,getFirstPlayer(),"5D");
+        setOnePawn(7,5,getFirstPlayer(),"9D");
+        setOnePawn(5,7, getFirstPlayer(),"13D");
     }
 
     public void initPawnPlayer2(){
@@ -57,10 +57,10 @@ public class GameLogic implements PlayableLogic{
         setPawn(3,8,10, true,getSecondPlayer());
 
         //leftOvers :)
-        setOnePawn(5,1, getSecondPlayer());
-        setOnePawn(1,5, getSecondPlayer());
-        setOnePawn(5,9, getSecondPlayer());
-        setOnePawn(9,5, getSecondPlayer());
+        setOnePawn(5,1, getSecondPlayer(),"6A");
+        setOnePawn(1,5, getSecondPlayer(), "12A");
+        setOnePawn(5,9, getSecondPlayer(), "19A");
+        setOnePawn(9,5, getSecondPlayer(), "13A");
 
     }
 
@@ -122,19 +122,20 @@ public class GameLogic implements PlayableLogic{
     }
 
     //set only one pawn in every time
-    public void setOnePawn(int row, int col, Player player) {//check the numPiece
+    public void setOnePawn(int row, int col, Player player, String numPiece) {//check the numPiece
         Position pawnPos = new Position(row, col);
 
         if (player.isPlayerOne()) {
-            ConcretePiece playerPawn = new Pawn(getFirstPlayer(), pawnPos,"");
+            ConcretePiece playerPawn = new Pawn(getFirstPlayer(), pawnPos,numPiece);
             placePiece(playerPawn, pawnPos);
         }
         else {
-            ConcretePiece playerPawn = new Pawn(getSecondPlayer(), pawnPos,"");
+            ConcretePiece playerPawn = new Pawn(getSecondPlayer(), pawnPos,numPiece);
             placePiece(playerPawn, pawnPos);
         }
 
     }
+
 
 
     public void placePiece(ConcretePiece piece, Position position) {
@@ -262,7 +263,6 @@ public class GameLogic implements PlayableLogic{
             }
         }
         changeTurn();
-        return ;
     }
 
     public boolean checKingNeighbour(int posX , int posY){
@@ -290,7 +290,8 @@ public class GameLogic implements PlayableLogic{
                 return true;
             }
         }
-        else {
+        else if(board[posX+1][posY]!=null&&board[posX-1][posY]!=null&&board[posX][posY+1]!=null&&
+                board[posX][posY-1]!=null){
             if(!board[posX+1][posY].getOwner().isPlayerOne()&&!board[posX-1][posY].getOwner().isPlayerOne()&&
                     !board[posX][posY-1].getOwner().isPlayerOne()&&!board[posX][posY+1].getOwner().isPlayerOne()){
                 return true;
@@ -315,8 +316,8 @@ public class GameLogic implements PlayableLogic{
                 return true;
             }
         }
-        if ((neighbour1.getX() > 9 || neighbour1.getX() < 0 ||
-                neighbour1.getY() > 9 || neighbour1.getY() < 0)) {
+        if ((neighbour1.getX() > 10 || neighbour1.getX() < 0 ||
+                neighbour1.getY() > 10 || neighbour1.getY() < 0)) {
             countWall++;
             OpponnentLeftRight++;
 
@@ -328,7 +329,7 @@ public class GameLogic implements PlayableLogic{
                 OpponnentLeftRight++;
             }
         }
-        if((neighbour2.getX()>9||neighbour2.getX()<0||neighbour2.getY()>9||
+        if((neighbour2.getX()>10||neighbour2.getX()<0||neighbour2.getY()>10||
                 neighbour2.getY()<0)){
             countWall++;
                 OpponnentLeftRight++;
@@ -341,7 +342,7 @@ public class GameLogic implements PlayableLogic{
                 OpponnentLeftRight++;
               }
             }
-        if((neighbour3.getX()>9||neighbour3.getX()<0||neighbour3.getY()>9||
+        if((neighbour3.getX()>10||neighbour3.getX()<0||neighbour3.getY()>10||
                 neighbour3.getY()<0)){
             countWall++;
                 OpponnentUpDown++;
@@ -353,7 +354,7 @@ public class GameLogic implements PlayableLogic{
                 OpponnentUpDown++;
              }
          }
-         if ((neighbour4.getX()>9||neighbour4.getX()<0||neighbour4.getY()>9||
+         if ((neighbour4.getX()>10||neighbour4.getX()<0||neighbour4.getY()>10||
                  neighbour4.getY()<0)){
                  countWall++;
                   OpponnentUpDown++;
@@ -364,10 +365,6 @@ public class GameLogic implements PlayableLogic{
                  OpponnentUpDown++;
              }
          }
-        System.out.println("count is:"+count);
-        System.out.println("OpponnentUpDown is:"+OpponnentUpDown);
-        System.out.println("OpponnentLeftRight is:"+OpponnentLeftRight);
-        System.out.println("countWall is:"+countWall);
         if(count>2|OpponnentUpDown==2||OpponnentLeftRight==2||(countWall+count>2)||
                 (OpponnentLeftRight+countWall==2)||(OpponnentUpDown+countWall==2)){
             return true;
