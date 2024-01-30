@@ -11,7 +11,7 @@ public class GameLogic implements PlayableLogic{
         this.firstPlayer = new ConcretePlayer(1);
         this.secendPlayer = new ConcretePlayer(2);
         this.currentPlayer = secendPlayer;
-        this.king = new King(this.firstPlayer,new Position(5,5),"k7");
+        this.king = new King(this.firstPlayer,new Position(5,5),"K7");
        initBoard();
     }
    public void initBoard(){// placing the board how it should be at the start
@@ -196,11 +196,13 @@ public class GameLogic implements PlayableLogic{
     }
 
 
-    public void eatingPiece(int positionX, int positionY){
+    public void eatingPiece(int positionX, int positionY){//get the piece that we want to check if he killed someone
         ConcretePiece piece = board[positionX][positionY];
         if(piece.getType().equals("♔")){//continue!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            if(positionX==0&&positionY==10||positionY==0&&positionX==10||positionX==0&&positionY==0||positionX==10&&positionY==10){
-                //  isGameFinished();
+            if((positionX==0&&positionY==10)||(positionY==0&&positionX==10)||(positionX==0&&positionY==0)||(positionX==10&&positionY==10)){
+                isGameFinished();
+                reset();
+                return;
             }
         }
         if (!piece.getType().equals("♔")) { // continue!!!!!!!!!!!!!!!!
@@ -306,12 +308,19 @@ public class GameLogic implements PlayableLogic{
                     return true;
                 }
             }
+           else {
+                if(!board[posX+1][posY].getOwner().isPlayerOne()&&!board[posX-1][posY].getOwner().isPlayerOne()&&
+                        !board[posX][posY-1].getOwner().isPlayerOne()&&!board[posX][posY+1].getOwner().isPlayerOne()){
+                    return true;
+                }
+            }
         }
         if (!myOwner.isPlayerOne() && (neighbour1.getX() == 11 || neighbour1.getX() == -1 ||
                 neighbour1.getY() == 11 || neighbour1.getY() == -1)) {
             countWall++;
+            OpponnentLeftRight++;
         }
-         else if(board[posX+1][posY]!=null) {//if there's a piece and it's not the king
+         else if(board[posX+1][posY]!=null) {
             if (neighbour1.isValidPosition()&&!board[posX+1][posY].getType().equals("♔") &&
                     !myOwner.equals(board[posX+1][posY].getOwner())) {//if the position is on the board and the two neighbours are opponents
                 count++;
@@ -320,6 +329,7 @@ public class GameLogic implements PlayableLogic{
         }
         if(!myOwner.isPlayerOne() && (neighbour2.getX()==11||neighbour2.getX()==-1||neighbour2.getY()==11||neighbour2.getY()==-1)){
             countWall++;
+            OpponnentLeftRight++;
         }
         else if (board[posX-1][posY]!=null) {
             if (neighbour2.isValidPosition()&&!board[posX-1][posY].getType().equals("♔") &&!myOwner.equals(board[posX-1][posY].getOwner())) {
@@ -329,6 +339,7 @@ public class GameLogic implements PlayableLogic{
             }
         if(!myOwner.isPlayerOne() && (neighbour3.getX()==11||neighbour3.getX()==-1||neighbour3.getY()==11||neighbour3.getY()==-1)){
             countWall++;
+            OpponnentUpDown++;
         }
         else if (board[posX][posY+1]!=null) {
             if (neighbour3.isValidPosition()&&!board[posX][posY+1].getType().equals("♔") &&!myOwner.equals(board[posX][posY+1].getOwner())) {
@@ -338,6 +349,7 @@ public class GameLogic implements PlayableLogic{
          }
          if (!myOwner.isPlayerOne() && (neighbour4.getX()==11||neighbour4.getX()==-1||neighbour4.getY()==11||neighbour4.getY()==-1)){
              countWall++;
+             OpponnentUpDown++;
          }
          else if(board[posX][posY-1]!=null) {
              if (neighbour4.isValidPosition()&&!board[posX][posY-1].getType().equals("♔") &&!myOwner.equals(board[posX][posY-1].getOwner())) {
@@ -345,7 +357,8 @@ public class GameLogic implements PlayableLogic{
                  OpponnentUpDown++;
              }
          }
-        if(count>=3||OpponnentUpDown==2||OpponnentLeftRight==2||(countWall>=1&&count>=1)){
+        if(count>2|OpponnentUpDown==2||OpponnentLeftRight==2||(countWall>0&&count>0)||
+                (OpponnentUpDown>=1&&countWall>=1)||(OpponnentLeftRight>=1&&countWall>=1)){
             return true;
         }
         return false;
