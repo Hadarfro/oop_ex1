@@ -190,11 +190,11 @@ public class GameLogic implements PlayableLogic{
             piece = board[positionX][positionY];
         }
             if (positionY == b.getY() && positionX == b.getX()) {//if we make it to b's position with no pieces in the way
-                if(isGameFinished()){
+                if(isGameFinished()){//put func that print what we want
                     if(firstPlayerWin()){
                         this.firstPlayer.setWins();
                     }
-                    else{
+                    else if(secondPlayerWin()){
                          this.secendPlayer.setWins();
                     }
                     reset();
@@ -302,6 +302,9 @@ public class GameLogic implements PlayableLogic{
 
     //check the extreme case when the pawn is near the wall and pawn cant go to the corners
     public boolean checkNeighbour(int posX , int posY){// return true if the piece in the position is eaten else return false
+       if (board[posX][posY]==null){
+           return false;
+       }
         int count = 0;
         Player myOwner = board[posX][posY].getOwner();
         int OpponnentLeftRight = 0;
@@ -405,20 +408,30 @@ public class GameLogic implements PlayableLogic{
     public boolean isGameFinished() {//continue!!!!!
         if(firstPlayerWin()){
             //need to print first player and then second player
-            reset();
+
             return true;
         }
         if(secondPlayerWin()){
             //need to print second player and then first player
-            reset();
             return true;
         }
         return false;
     }
-
+    public Position getKingPosition(){
+        for(int i=0;i<11;i++){
+            for (int j=0;j<11;j++){
+                if(board[i][j]!=null) {
+                    if (board[i][j].getType().equals("♔")) {
+                        return new Position(i, j);
+                    }
+                }
+            }
+        }
+        return null;
+    }
     public boolean firstPlayerWin(){//if the first player wins
-        int kingPosX = this.king.getKingPosition().getX();
-        int kingPosY = this.king.getKingPosition().getY();
+        int kingPosX = getKingPosition().getX();
+        int kingPosY = getKingPosition().getY();
         if(kingPosX==0&&kingPosY==0){
             return true;
         }
@@ -435,8 +448,8 @@ public class GameLogic implements PlayableLogic{
     }
 
     public boolean secondPlayerWin(){
-        int kingPosX = this.king.getKingPosition().getX();
-        int kingPosY = this.king.getKingPosition().getY();
+        int kingPosX = getKingPosition().getX();
+        int kingPosY = getKingPosition().getY();
         if(checkNeighbour(kingPosX,kingPosY)){
             return true;
         }
