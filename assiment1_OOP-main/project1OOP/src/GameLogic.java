@@ -267,27 +267,39 @@ public class GameLogic implements PlayableLogic{
 
     public boolean checKingNeighbour(int posX , int posY){
         if(posX==0){
-            if(!board[posX+1][posY].getOwner().isPlayerOne()&&!board[posX][posY+1].getOwner().isPlayerOne()&&
-                    !board[posX][posY-1].getOwner().isPlayerOne()){
-                return true;
+            if(board[posX+1][posY]!=null&&board[posX][posY+1]!=null&&
+                    board[posX][posY-1]!=null) {
+                if (!board[posX + 1][posY].getOwner().isPlayerOne() && !board[posX][posY + 1].getOwner().isPlayerOne() &&
+                        !board[posX][posY - 1].getOwner().isPlayerOne()) {
+                    return true;
+                }
             }
         }
         else if(posX == 10){
-            if(!board[posX-1][posY].getOwner().isPlayerOne()&&!board[posX][posY+1].getOwner().isPlayerOne()&&
-                    !board[posX][posY-1].getOwner().isPlayerOne()){
-                return true;
+            if(board[posX-1][posY]!=null&&board[posX][posY+1]!=null&&
+                    board[posX][posY-1]!=null) {
+                if (!board[posX - 1][posY].getOwner().isPlayerOne() && !board[posX][posY + 1].getOwner().isPlayerOne() &&
+                        !board[posX][posY - 1].getOwner().isPlayerOne()) {
+                    return true;
+                }
             }
         }
         else if(posY==0){
-            if(!board[posX+1][posY].getOwner().isPlayerOne()&&!board[posX-1][posY].getOwner().isPlayerOne()&&
-                    !board[posX][posY+1].getOwner().isPlayerOne()){
-                return true;
+            if(board[posX+1][posY]!=null&&board[posX-1][posY]!=null&&
+                    board[posX][posY+1]!=null) {
+                if (!board[posX + 1][posY].getOwner().isPlayerOne() && !board[posX - 1][posY].getOwner().isPlayerOne() &&
+                        !board[posX][posY + 1].getOwner().isPlayerOne()) {
+                    return true;
+                }
             }
         }
         else  if(posY==10){
-            if(!board[posX+1][posY].getOwner().isPlayerOne()&&!board[posX-1][posY].getOwner().isPlayerOne()&&
-                    !board[posX][posY-1].getOwner().isPlayerOne()){
-                return true;
+            if(board[posX+1][posY]!=null&&board[posX-1][posY]!=null&&
+                    board[posX][posY-1]!=null) {
+                if (!board[posX + 1][posY].getOwner().isPlayerOne() && !board[posX - 1][posY].getOwner().isPlayerOne() &&
+                        !board[posX][posY - 1].getOwner().isPlayerOne()) {
+                    return true;
+                }
             }
         }
         else if(board[posX+1][posY]!=null&&board[posX-1][posY]!=null&&board[posX][posY+1]!=null&&
