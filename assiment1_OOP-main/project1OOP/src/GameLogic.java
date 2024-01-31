@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameLogic implements PlayableLogic{  
+public class GameLogic implements PlayableLogic{
     private Player edit;
     private ConcretePlayer firstPlayer;
     private ConcretePlayer secendPlayer;
