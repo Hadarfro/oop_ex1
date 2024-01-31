@@ -25,9 +25,9 @@ public class GameLogic implements PlayableLogic{
     }
 
     public void initKing(){ //placing the king at the start of the game
-     Position kingPositionPlyaer1 = new Position(5,5);
+     Position kingPositionPlayer1 = new Position(5,5);
      ConcretePiece player1King = this.king;
-     placePiece(player1King,kingPositionPlyaer1);
+     placePiece(player1King,kingPositionPlayer1);
     }
 
     public void initPawnPlayer1(){
@@ -265,12 +265,11 @@ public class GameLogic implements PlayableLogic{
         changeTurn();
     }
 
-    public boolean checKingNeighbour(int posX , int posY){
+    public boolean checkKingNeighbour(int posX , int posY){
         if(posX==0){
-            if(board[posX+1][posY]!=null&&board[posX][posY+1]!=null&&
-                    board[posX][posY-1]!=null) {
-                if (!board[posX + 1][posY].getOwner().isPlayerOne() && !board[posX][posY + 1].getOwner().isPlayerOne() &&
-                        !board[posX][posY - 1].getOwner().isPlayerOne()) {
+            if(board[posX+1][posY]!=null&&board[posX][posY+1]!=null&&board[posX][posY-1]!=null) {
+                if (!board[posX+1][posY].getOwner().isPlayerOne() && !board[posX][posY + 1].getOwner().isPlayerOne() &&
+                        !board[posX][posY-1].getOwner().isPlayerOne()) {
                     return true;
                 }
             }
@@ -327,9 +326,10 @@ public class GameLogic implements PlayableLogic{
         Position neighbour3 = new Position(posX,posY+1);
         Position neighbour4 = new Position(posX,posY-1);
         if(board[posX][posY].getType().equals("♔")){// if the king might be eaten or winning
-            if(checKingNeighbour(posX,posY)){
+            if(checkKingNeighbour(posX,posY)){
                 return true;
             }
+            return false;
         }
         if ((neighbour1.getX() > 10 || neighbour1.getX() < 0 ||
                 neighbour1.getY() > 10 || neighbour1.getY() < 0)) {
@@ -442,6 +442,9 @@ public class GameLogic implements PlayableLogic{
         return null;
     }
     public boolean firstPlayerWin(){//if the first player wins
+        if(getKingPosition()==null){
+            return false;
+        }
         int kingPosX = getKingPosition().getX();
         int kingPosY = getKingPosition().getY();
         if(kingPosX==0&&kingPosY==0){
